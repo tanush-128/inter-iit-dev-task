@@ -49,6 +49,15 @@ func main() {
 
 	router.Use(corsMiddleware())
 
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"data": "Hello World!"})
+	})
+
+	router.POST("/ping",
+		func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{"data": "pong"})
+		})
+
 	itemGroup := router.Group("/item")
 	{
 		itemGroup.POST("/", itemHandler.CreateItem)
