@@ -40,8 +40,8 @@ COPY --from=builder /app/main .
 RUN chmod +x /app/main
 
 # Expose necessary ports
-EXPOSE 8081
-EXPOSE 50052
+EXPOSE 8080
+
 
 # Command to run the application
 CMD ["./main"]

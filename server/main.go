@@ -45,7 +45,7 @@ func main() {
 	locationHandler := handlers.NewLocationHandler(&locationService)
 
 	addItemsData(db)
-	// addLocationsData(db)
+	addLocationsData(db)
 
 	router.Use(corsMiddleware())
 
@@ -74,8 +74,6 @@ func main() {
 
 		userGroup.GET("/jwt", handler.GetUserWithJWT)
 	}
-
-	// item route group
 
 	// Start server
 	router.Run(fmt.Sprintf(":%s", cfg.HTTPPort))

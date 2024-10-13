@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Increment Version Number
         id: increment_version
@@ -28,17 +28,23 @@ jobs:
           else
             echo "0.0.1" > $VERSION_FILE
           fi
-          echo "::set-output name=version::$(cat $VERSION_FILE)"
+          echo "version=$(cat $VERSION_FILE)" >> $GITHUB_OUTPUT
+
+      - name: Get Git Hash
+        id: git_hash
+        run: |
+          HASH=$(git rev-parse --short HEAD)
+          echo "hash=$HASH" >> $GITHUB_OUTPUT
 
       - name: Build client image
         run: |
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/client:${{ steps.increment_version.outputs.version }}-${{ steps.git_hash.outputs.hash }} ./client
-          docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
+          echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/client:${{ steps.increment_version.outputs.version }}-${{ steps.git_hash.outputs.hash }}
 
       - name: Change the Conf file
         run: |
-          sed -i 's+${{ secrets.DOCKER_HUB_USERNAME }}/client.*+${{ secrets.DOCKER_HUB_USERNAME }}/client:${{ steps.increment_version.outputs.version }}-${{ steps.git_hash.outputs.hash }}+g' client-app.yaml
+          sed -i "s|${{ secrets.DOCKER_HUB_USERNAME }}/client.*|${{ secrets.DOCKER_HUB_USERNAME }}/client:${{ steps.increment_version.outputs.version }}-${{ steps.git_hash.outputs.hash }}|g" client-app.yaml
           git config --global user.email "tanush@myyahoo.com"
           git config --global user.name "tanush-128"
           git add .
