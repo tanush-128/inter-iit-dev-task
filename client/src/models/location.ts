@@ -37,6 +37,19 @@ class Location {
 
     // return locations.map((location) => Location.fromJson(location));
   }
+
+  static async update(location: Location) {
+    const response = await fetch(`${Location.backend_url}/location/`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(location),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to update location");
+    }
+  }
 }
 
 export default Location;

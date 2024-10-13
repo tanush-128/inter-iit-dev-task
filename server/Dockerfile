@@ -36,8 +36,13 @@ WORKDIR /app
 # Copy the built binary from the builder stage
 COPY --from=builder /app/main .
 
+# Copy the items.json file
+COPY --from=builder /app/items.json .
+# Copy the godowns.json file
+COPY --from=builder /app/godowns.json .
+
 # Make sure the binary has executable permissions
-RUN chmod +x /app/main
+RUN chmod +x main
 
 # Expose necessary ports
 EXPOSE 8080

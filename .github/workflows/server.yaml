@@ -44,6 +44,7 @@ jobs:
 
       - name: Change the Conf file
         run: |
+          git pull origin main
           sed -i "s|${{ secrets.DOCKER_HUB_USERNAME }}/server.*|${{ secrets.DOCKER_HUB_USERNAME }}/server:${{ steps.increment_version.outputs.version }}-${{ steps.git_hash.outputs.hash }}|g" server-app.yaml
           git config --global user.email "tanush@myyahoo.com"
           git config --global user.name "tanush-128"

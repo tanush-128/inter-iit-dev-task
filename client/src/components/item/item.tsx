@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Button } from "../ui/button";
-import { Image, Plus } from "lucide-react";
+import { Image, ImagePlus, Plus } from "lucide-react";
 import Location from "~/models/location";
 import { useEffect, useState } from "react";
 import { SetLocation } from "./location";
@@ -64,14 +64,20 @@ const ItemView = ({
           <span className="ml-1">Image</span>
         </div>
         <div className="h-[420px] w-full rounded-3xl border border-dashed border-indigo-400 p-1">
-          <img
-            src={
-              updatedItem.image_url ||
-              "https://png.pngtree.com/png-vector/20191129/ourmid/pngtree-image-upload-icon-photo-upload-icon-png-image_2047545.jpg"
-            }
-            className="h-full w-full rounded-3xl object-contain"
-            alt={updatedItem.name || "Placeholder"}
-          />
+          {updatedItem.image_url !== "" ? (
+            <img
+              src={
+                updatedItem.image_url
+                // "https://png.pngtree.com/png-vector/20191129/ourmid/pngtree-image-upload-icon-photo-upload-icon-png-image_2047545.jpg"
+              }
+              className="h-full w-full rounded-3xl object-contain"
+              alt={updatedItem.name || "Placeholder"}
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center">
+              <ImagePlus size={128} />
+            </div>
+          )}
         </div>
       </div>
 
