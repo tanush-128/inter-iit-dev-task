@@ -48,6 +48,9 @@ RUN chmod +x main
 # Expose necessary ports
 EXPOSE 8080
 
+ENV HTTP_PORT 8080
+ENV DB_URL host=ec2-13-234-76-199.ap-south-1.compute.amazonaws.com user=postgres password=8309300581@Om dbname=task port=5432 sslmode=disable TimeZone=Asia/Kolkata
+ENV MODE production
 
 # Command to run the application
 CMD ["./main"]

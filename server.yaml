@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  server:
+    image: "tanush128/server:bdaa35a"
+    ports:
+      - "8080:8080"
+    environment:
+      - MODE=dev
+      - HTTP_PORT=8080
+      - DB_URL=DFSDFDSF
