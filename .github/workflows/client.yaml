@@ -39,6 +39,8 @@ jobs:
       - name: Change the Conf file
         run: |
           sed -i 's+${{ secrets.DOCKER_HUB_USERNAME }}/client.*+${{ secrets.DOCKER_HUB_USERNAME }}/client:${{ steps.increment_version.outputs.version }}-${{ steps.git_hash.outputs.hash }}+g' client-app.yaml
+          git config --global user.email "tanush@myyahoo.com"
+          git config --global user.name "tanush-128"
           git add .
           git commit -m "Update client image tag"
           git push origin main
