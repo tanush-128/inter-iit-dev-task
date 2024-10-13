@@ -29,6 +29,7 @@ FROM --platform=linux/amd64 gcr.io/distroless/nodejs20-debian12 AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
+ENV NEXT_PUBLIC_BACKEND_URL https://backend.warhosuse.run.place
 
 # ENV NEXT_TELEMETRY_DISABLED 1
 

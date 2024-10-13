@@ -2,9 +2,7 @@ package config
 
 import (
 	"fmt"
-	"log"
-
-	"github.com/spf13/viper"
+	"os"
 )
 
 type Config struct {
@@ -14,19 +12,29 @@ type Config struct {
 }
 
 func LoadConfig() (*Config, error) {
-	viper.SetConfigFile("./config/config.yaml")
-	// viper.SetConfigFile("/go/src/app/config/config.yaml")
+	// viper.SetConfigFile("./config/config.yaml")
+	// // viper.SetConfigFile("/go/src/app/config/config.yaml")
 
-	if err := viper.ReadInConfig(); err != nil {
-		return nil, fmt.Errorf("failed to read config file: %w", err)
+	// if err := viper.ReadInConfig(); err != nil {
+	// 	return nil, fmt.Errorf("failed to read config file: %w", err)
+	// }
+
+	// var Config Config
+	// if err := viper.Unmarshal(&Config); err != nil {
+	// 	return nil, fmt.Errorf("failed to unmarshal config: %w", err)
+	// }
+
+	// log.Printf("Config: %+v", Config)
+	db_url, _ := os.LookupEnv("DB_URL")
+	mode, _ := os.LookupEnv("MODE")
+	http_port, _ := os.LookupEnv("HTTP_PORT")
+
+	Config := Config{
+		// MODE:     "dev",
+		MODE:     mode,
+		DB_URL:   db_url,
+		HTTPPort: http_port,
 	}
-
-	var Config Config
-	if err := viper.Unmarshal(&Config); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
-	}
-
-	log.Printf("Config: %+v", Config)
-
+	fmt.Printf("%+v", Config)
 	return &Config, nil
 }

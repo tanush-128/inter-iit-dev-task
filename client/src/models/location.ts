@@ -27,10 +27,12 @@ class Location {
   }
 
   static async update(location: Location) {
+    const token = localStorage.getItem("token");
     const response = await fetch(`${Location.backend_url}/location/`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(location),
     });
@@ -40,10 +42,13 @@ class Location {
   }
 
   static async create(location: Location) {
+    const token = localStorage.getItem("token");
+
     const response = await fetch(`${Location.backend_url}/location/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(location),
     });

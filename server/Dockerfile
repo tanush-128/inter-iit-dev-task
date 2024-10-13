@@ -40,6 +40,7 @@ COPY --from=builder /app/main .
 COPY --from=builder /app/items.json .
 # Copy the godowns.json file
 COPY --from=builder /app/godowns.json .
+COPY --from=builder /app/config/ ./config/
 
 # Make sure the binary has executable permissions
 RUN chmod +x main
