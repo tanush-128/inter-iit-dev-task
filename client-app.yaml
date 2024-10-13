@@ -2,7 +2,7 @@ name: client
 domain: warhosuse.run.place
 description: >
   Client for inter iit tech task
-image: tanush128/client:latest
+image: tanush128/client:99e66db
 port : 3000 
 nginx:
   # optional (default: true)
