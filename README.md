@@ -1,5 +1,7 @@
 # Inter-IIT Dev Task
 
+[Watch the DEMO VIDEO](https://drive.google.com/file/d/1XdqyWGhaxSuylC9qzueIEJP2aNJTuRRo/view?t=3)
+
 ## Tech Stack
 
 ### Frontend:
@@ -59,6 +61,8 @@
     ```
 
 3. Access the frontend at `http://localhost:3000`.
+
+
 
 ## Hosted Version
 

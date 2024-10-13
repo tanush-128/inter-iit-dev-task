@@ -9,8 +9,6 @@ services:
       - "3000:3000"
     depends_on:
       - server
-    env_file:
-      - .env
   server:
     build:
       context: ./server
@@ -20,4 +18,4 @@ services:
     environment:
       - MODE=dev
       - HTTP_PORT=8080
-      - DB_URL=dsadasd
+      - DB_URL=not_required
