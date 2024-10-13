@@ -13,6 +13,7 @@ type LocationService interface {
 	GetLocationByID(ctx *gin.Context, id string) (models.Location, error)
 	GetAllLocations(ctx *gin.Context) ([]models.Location, error)
 	UpdateLocation(ctx *gin.Context, req models.Location) (models.Location, error)
+	DeleteLocation(ctx *gin.Context, id string) error
 }
 
 type locationService struct {
@@ -59,4 +60,9 @@ func (s *locationService) UpdateLocation(ctx *gin.Context, req models.Location) 
 	}
 
 	return updatedLocation, nil
+}
+
+func (s *locationService) DeleteLocation(ctx *gin.Context, id string) error {
+	err := s.locationRepository.DeleteLocation(id)
+	return err
 }

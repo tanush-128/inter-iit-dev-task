@@ -70,3 +70,15 @@ func (h *LocationHandler) UpdateLocation(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, updatedLocation)
 }
+
+func (h *LocationHandler) DeleteLocation(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	err := h.locationService.DeleteLocation(ctx, id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Location deleted successfully"})
+}

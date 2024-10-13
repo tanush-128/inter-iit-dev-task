@@ -18,8 +18,13 @@ export function ContextMenuDemo({
   location?: Location;
   item?: Item;
 }) {
-  const { focusedItem, foucusedLocation, setFocusedItem, setFocusedLocation } =
-    useSidebar();
+  const {
+    focusedItem,
+    foucusedLocation,
+    setFocusedItem,
+    setFocusedLocation,
+    initiateNewLocation,
+  } = useSidebar();
   return (
     <ContextMenu>
       <ContextMenuTrigger className="">{children}</ContextMenuTrigger>
@@ -35,7 +40,14 @@ export function ContextMenuDemo({
         <ContextMenuItem inset disabled>
           Delete location
         </ContextMenuItem>
-        <ContextMenuItem inset>Add sub location</ContextMenuItem>
+        <ContextMenuItem
+          inset
+          onClick={() => {
+            initiateNewLocation(location!);
+          }}
+        >
+          Add sub location
+        </ContextMenuItem>
 
         <ContextMenuSeparator />
         <ContextMenuItem inset>Add Item</ContextMenuItem>

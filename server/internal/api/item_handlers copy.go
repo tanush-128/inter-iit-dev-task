@@ -70,3 +70,15 @@ func (h *ItemHandler) UpdateItem(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, updatedItem)
 }
+
+func (h *ItemHandler) DeleteItem(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	err := h.itemService.DeleteItem(ctx, id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Item deleted successfully"})
+}

@@ -136,7 +136,7 @@ const LocationElement = ({ location }: { location: Location }) => {
             ref={inputRef} // Attach the ref here
             type="text"
             defaultValue={location.name} // Use defaultValue to prevent making it controlled
-            className="border border-primary bg-transparent"
+            className="border border-primary bg-transparent px-1"
             onKeyDown={handleKeyDown} // Capture Enter key
           />
         ) : (

@@ -12,6 +12,7 @@ type ItemRepository interface {
 	GetItemByID(id string) (models.Item, error)
 	GetAllItems() ([]models.Item, error)
 	UpdateItem(item models.Item) (models.Item, error)
+	DeleteItem(id string) error
 }
 
 type itemRepository struct {
@@ -63,4 +64,13 @@ func (r *itemRepository) UpdateItem(item models.Item) (models.Item, error) {
 	}
 
 	return item, nil
+}
+
+func (r *itemRepository) DeleteItem(id string) error {
+	tx := r.db.Where("id = ?", id).Delete(&models.Item{})
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	return nil
 }

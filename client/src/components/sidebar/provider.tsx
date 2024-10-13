@@ -9,6 +9,7 @@ interface SidebarContextType {
   setFocusedLocation: (location: Location | null) => void;
   updateLocationName: (location: Location, name: string) => Promise<void>;
   locations: Location[];
+  initiateNewLocation: (location: Location) => void;
 }
 
 const SidebarContext = createContext<SidebarContextType | null>(null);
@@ -26,6 +27,20 @@ const SidebarProvider = ({
     null,
   );
   const updateLocationName = async (location: Location, name: string) => {
+    if (location.id === "new_location") {
+      const loc = await Location.create({
+        ...location,
+        name,
+      });
+
+      setLocations((prev) => {
+        const index = prev.findIndex((l) => l.id === location.id);
+        const newLocations = [...prev];
+        newLocations[index] = loc;
+        return newLocations;
+      });
+      return;
+    }
     const updatedLocation = { ...location, name };
     await Location.update(updatedLocation);
     setLocations((prev) => {
@@ -41,6 +56,16 @@ const SidebarProvider = ({
     setLocations(allLocations);
   }, [allLocations]);
 
+  const initiateNewLocation = (location: Location) => {
+    const newLocation = new Location({
+      id: "new_location",
+      name: "",
+      parent_godown: location.id,
+    });
+    setLocations((prev) => [...prev, newLocation]);
+    setFocusedLocation(newLocation);
+  };
+
   return (
     <SidebarContext.Provider
       value={{
@@ -50,6 +75,7 @@ const SidebarProvider = ({
         setFocusedLocation,
         updateLocationName,
         locations,
+        initiateNewLocation,
       }}
     >
       {children}

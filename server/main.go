@@ -63,7 +63,9 @@ func main() {
 		itemGroup.POST("/", itemHandler.CreateItem)
 		itemGroup.GET("/:id", itemHandler.GetItemByID)
 		itemGroup.GET("/", itemHandler.GetAllItems)
+		itemGroup.Use(middlewares.JwtMiddleware)
 		itemGroup.PUT("/", itemHandler.UpdateItem)
+		itemGroup.DELETE("/:id", itemHandler.DeleteItem)
 	}
 	// location route group
 	locationGroup := router.Group("/location")
@@ -71,16 +73,17 @@ func main() {
 		locationGroup.POST("/", locationHandler.CreateLocation)
 		locationGroup.GET("/:id", locationHandler.GetLocationByID)
 		locationGroup.GET("/", locationHandler.GetAllLocations)
+		locationGroup.Use(middlewares.JwtMiddleware)
 		locationGroup.PUT("/", locationHandler.UpdateLocation)
+		locationGroup.DELETE("/:id", locationHandler.DeleteLocation)
 	}
 	// user route group
 	userGroup := router.Group("/user")
 	{
 		userGroup.POST("/", handler.CreateUser)
 		userGroup.POST("/signin", handler.UserSignIn)
-		userGroup.PUT("/", handler.UpdateUser)
 		userGroup.Use(middlewares.JwtMiddleware)
-
+		userGroup.PUT("/", handler.UpdateUser)
 		userGroup.GET("/jwt", handler.GetUserWithJWT)
 	}
 

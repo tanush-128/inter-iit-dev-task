@@ -13,6 +13,7 @@ type ItemService interface {
 	GetItemByID(ctx *gin.Context, id string) (models.Item, error)
 	GetAllItems(ctx *gin.Context) ([]models.Item, error)
 	UpdateItem(ctx *gin.Context, req models.Item) (models.Item, error)
+	DeleteItem(ctx *gin.Context, id string) error
 }
 
 type itemService struct {
@@ -59,4 +60,13 @@ func (s *itemService) UpdateItem(ctx *gin.Context, req models.Item) (models.Item
 	}
 
 	return updatedItem, nil
+}
+
+func (s *itemService) DeleteItem(ctx *gin.Context, id string) error {
+	err := s.itemRepository.DeleteItem(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -1,6 +1,6 @@
-import Item from "~/models/item";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { Image, ImagePlus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -8,23 +8,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { Button } from "../ui/button";
-import { Image, ImagePlus, Plus } from "lucide-react";
+import Item from "~/models/item";
 import Location from "~/models/location";
-import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import { SetLocation } from "./location";
-import { useRouter } from "next/navigation";
-import { NestedDraggableList } from "./test";
 
 const ItemView = ({
   item,
   allItems,
   onChange,
+  deleteItem,
   locations,
 }: {
   item?: Item;
   allItems: Item[];
   onChange: (updatedItem: Item) => void;
+  deleteItem: (item: Item) => void;
   locations: Location[];
 }) => {
   // Check if item is empty, indicating Add Item mode
@@ -36,7 +37,7 @@ const ItemView = ({
     image_url: "",
     quantity: 0,
     price: 0,
-    category: "",
+    category: "Electronics",
     status: "in_stock",
     brand: "",
     attributes: {
@@ -79,6 +80,20 @@ const ItemView = ({
             </div>
           )}
         </div>
+        <div>
+          <Label htmlFor="image" className="text-primary">
+            Image URL
+          </Label>
+          <Input
+            id="image"
+            placeholder="Enter image URL"
+            value={updatedItem.image_url}
+            onChange={(e) => {
+              setUpdatedItem({ ...updatedItem, image_url: e.target.value });
+            }}
+            className="mt-1"
+          />
+        </div>
       </div>
 
       <div className="flex-[7] space-y-4 rounded-3xl bg-secondary p-6 shadow-lg">
@@ -120,30 +135,15 @@ const ItemView = ({
             <Label htmlFor="category" className="text-primary">
               Category
             </Label>
-            <Select
+            <Input
+              id="category"
+              placeholder="Enter category"
               value={updatedItem.category}
-              onValueChange={(value) => {
-                setUpdatedItem({ ...updatedItem, category: value });
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue>
-                  {updatedItem.category || "Select a category"}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {/* <SelectItem value="electronics">Electronics</SelectItem>
-                  <SelectItem value="furniture">Furniture</SelectItem> */}
-                {allItems
-                  .map((item) => item.category)
-                  .filter((value, index, self) => self.indexOf(value) === index)
-                  .map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
+              className="mt-1"
+              onChange={(e) =>
+                setUpdatedItem({ ...updatedItem, category: e.target.value })
+              }
+            />
           </div>
         </div>
 
@@ -278,22 +278,34 @@ const ItemView = ({
             setUpdatedItem({ ...updatedItem, godown_id: location.id })
           }
         />
-        <div className="flex justify-end space-x-4">
-          <Button
-            className="bg-slate-400"
-            onClick={() => setUpdatedItem(isNewItem ? defaultItem : item)}
-          >
-            Reset
-          </Button>
-          <Button
-            onClick={() => {
-              onChange(updatedItem);
-              setUpdatedItem(defaultItem);
-              console.log(updatedItem);
-            }}
-          >
-            {isNewItem ? "Add" : "Save"}
-          </Button>
+        <div className="flex justify-between space-x-4">
+          {!isNewItem && (
+            <Button
+              className="bg-red-600 text-white"
+              onClick={() => {
+                deleteItem(updatedItem);
+              }}
+            >
+              Delete
+            </Button>
+          )}
+          <div className="flex justify-end space-x-4">
+            <Button
+              className="bg-slate-400"
+              onClick={() => setUpdatedItem(isNewItem ? defaultItem : item)}
+            >
+              Reset
+            </Button>
+            <Button
+              onClick={() => {
+                onChange(updatedItem);
+                setUpdatedItem(defaultItem);
+                console.log(updatedItem);
+              }}
+            >
+              {isNewItem ? "Add" : "Save"}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

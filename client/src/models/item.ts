@@ -1,5 +1,4 @@
 import { BACKEND_URL } from "~/constants";
-import { items } from "~/data/items";
 
 class Item {
   item_id: string;
@@ -43,10 +42,13 @@ class Item {
   }
 
   static async updateItem(item: Item) {
+    const token = localStorage.getItem("token");
+
     const response = await fetch(`${Item.backend_url}/item/`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(item),
     });
@@ -55,15 +57,33 @@ class Item {
   }
 
   static async createItem(item: Item) {
+    const token = localStorage.getItem("token");
+
     const response = await fetch(`${Item.backend_url}/item/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
+
+      // mode: "no-cors",
       body: JSON.stringify(item),
     });
     const newItemData = await response.json();
     return Item.fromJson(newItemData);
+  }
+
+  static async deleteItem(item: Item) {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${Item.backend_url}/item/${item.item_id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to delete item");
+    }
   }
 }
 

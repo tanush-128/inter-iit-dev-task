@@ -121,6 +121,9 @@ const LocationSelect = ({
   const locations = allLocations.filter(
     (l) => l.parent_godown === location.parent_godown,
   );
+  if (location.id === "") {
+    return null;
+  }
   return (
     <Select
       value={location.id}

@@ -1,17 +1,10 @@
 "use client";
-import { DndContext } from "@dnd-kit/core";
-import { Folder, Image, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import ReactDragListView from "react-drag-listview";
+import { set } from "zod";
 import ItemView from "~/components/item/item";
 import { SidebarProvider } from "~/components/sidebar/provider";
 import { Sidebar } from "~/components/sidebar/sidebar";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "~/components/ui/accordion";
 import UserData from "~/components/userdata";
 import Item from "~/models/item";
 import Location from "~/models/location";
@@ -25,6 +18,13 @@ export default function HomePage() {
     Location.getLocations().then((locations) => setLocations(locations));
     Item.getItems().then((items) => setItems(items));
   }, []);
+
+  const deleteItem = (item: Item) => {
+    Item.deleteItem(item).then(() => {
+      setItems((items) => items.filter((i) => i.item_id !== item.item_id));
+    });
+    setSelectedItem(null);
+  };
 
   return (
     <div className="flex h-screen gap-12 px-12 pb-2 pt-8">
@@ -59,14 +59,23 @@ export default function HomePage() {
         <ItemView
           item={selectedItem ?? undefined}
           allItems={items}
+          deleteItem={deleteItem}
           onChange={(i) => {
-            Item.updateItem(i).then((updatedItem) => {
-              setItems((items) =>
-                items.map((item) =>
-                  item.item_id === updatedItem.item_id ? updatedItem : item,
-                ),
-              );
-            });
+            if (selectedItem) {
+              Item.updateItem(i).then((updatedItem) => {
+                setItems((items) =>
+                  items.map((item) =>
+                    item.item_id === updatedItem.item_id ? updatedItem : item,
+                  ),
+                );
+              });
+            } else {
+              console.log(i);
+              Item.createItem(i).then((createdItem) => {
+                setItems((items) => [...items, createdItem]);
+                setSelectedItem(createdItem);
+              });
+            }
           }}
           locations={locations}
         />

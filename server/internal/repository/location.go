@@ -12,6 +12,7 @@ type LocationRepository interface {
 	GetLocationByID(id string) (models.Location, error)
 	GetAllLocations() ([]models.Location, error)
 	UpdateLocation(location models.Location) (models.Location, error)
+	DeleteLocation(id string) error
 }
 
 type locationRepository struct {
@@ -63,4 +64,13 @@ func (r *locationRepository) UpdateLocation(location models.Location) (models.Lo
 	}
 
 	return location, nil
+}
+
+func (r *locationRepository) DeleteLocation(id string) error {
+	tx := r.db.Where("id = ?", id).Delete(&models.Location{})
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	return nil
 }
