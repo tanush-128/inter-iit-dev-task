@@ -78,7 +78,7 @@ const LoginPage = () => {
               />
               <div
                 className="absolute right-2 top-2 cursor-pointer"
-                onClick={() => setPasswordVisible(!passswordVisible)}
+                onClick={() => setPasswordVisible(!passswordVisible)} 
               >
                 {passswordVisible ? <EyeOff size={24} /> : <Eye size={24} />}
               </div>

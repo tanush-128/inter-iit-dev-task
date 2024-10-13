@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import { BACKEND_URL } from "~/constants";
 
 interface UserData {
   name: string;
@@ -17,7 +18,7 @@ const AuthContext = createContext({} as AuthContextType);
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
 
-  const backend_url = "http://localhost:8080";
+  const backend_url = BACKEND_URL;
 
   const login = async (email: string, password: string) => {
     const response = await fetch(`${backend_url}/user/signin`, {

@@ -1,5 +1,5 @@
 name: server
-domain: server.openzo.in
+domain: backend.warhosuse.run.place
 description: >
   Client for inter iit tech task
 image: tanush128/server:0.0.1-09eb141

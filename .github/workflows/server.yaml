@@ -14,22 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Increment Version Number
-        id: increment_version
-        run: |
-          VERSION_FILE="version.txt"
-          if [ -f "$VERSION_FILE" ]; then
-            VERSION=$(cat $VERSION_FILE)
-            MAJOR=$(echo $VERSION | cut -d. -f1)
-            MINOR=$(echo $VERSION | cut -d. -f2)
-            PATCH=$(echo $VERSION | cut -d. -f3)
-            PATCH=$((PATCH+1))
-            echo "$MAJOR.$MINOR.$PATCH" > $VERSION_FILE
-          else
-            echo "0.0.1" > $VERSION_FILE
-          fi
-          echo "version=$(cat $VERSION_FILE)" >> $GITHUB_OUTPUT
-
       - name: Get Git Hash
         id: git_hash
         run: |
@@ -38,14 +22,14 @@ jobs:
 
       - name: Build server image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/server:${{ steps.increment_version.outputs.version }}-${{ steps.git_hash.outputs.hash }} ./server
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/server:${{ steps.git_hash.outputs.hash }} ./server
           echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/server:${{ steps.increment_version.outputs.version }}-${{ steps.git_hash.outputs.hash }}
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/server:${{ steps.git_hash.outputs.hash }}
 
       - name: Change the Conf file
         run: |
           git pull origin main
-          sed -i "s|${{ secrets.DOCKER_HUB_USERNAME }}/server.*|${{ secrets.DOCKER_HUB_USERNAME }}/server:${{ steps.increment_version.outputs.version }}-${{ steps.git_hash.outputs.hash }}|g" server-app.yaml
+          sed -i "s|${{ secrets.DOCKER_HUB_USERNAME }}/server.*|${{ secrets.DOCKER_HUB_USERNAME }}/server:${{ steps.git_hash.outputs.hash }}|g" server-app.yaml
           git config --global user.email "tanush@myyahoo.com"
           git config --global user.name "tanush-128"
           git add .

@@ -1,3 +1,4 @@
+import { BACKEND_URL } from "~/constants";
 import { items } from "~/data/items";
 
 class Item {
@@ -33,7 +34,7 @@ class Item {
     return new Item(item);
   }
 
-  static backend_url = "http://localhost:8080";
+  static backend_url = BACKEND_URL;
 
   static async getItems() {
     const response = await fetch(`${Item.backend_url}/item/`);

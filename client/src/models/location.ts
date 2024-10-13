@@ -4,6 +4,7 @@
 //     "parent_godown": null
 //   },
 
+import { BACKEND_URL } from "~/constants";
 import { locations } from "~/data/godowns";
 
 // export interface Location {
@@ -27,7 +28,7 @@ class Location {
     return new Location(location);
   }
 
-  static backend_url = "http://localhost:8080";
+  static backend_url = BACKEND_URL;
 
   static async getLocations() {
     const response = await fetch(`${Location.backend_url}/location/`);
