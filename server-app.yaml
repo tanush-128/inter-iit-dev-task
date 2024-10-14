@@ -2,7 +2,7 @@ name: server
 domain: backend.warhosuse.run.place
 description: >
   Client for inter iit tech task
-image: tanush128/server:af9796c
+image: tanush128/server:c5bda3b
 port : 8080
 nginx:
   # optional (default: true)
