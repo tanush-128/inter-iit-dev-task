@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"os"
+
+	"github.com/subosito/gotenv"
 )
 
 type Config struct {
@@ -25,6 +27,12 @@ func LoadConfig() (*Config, error) {
 	// }
 
 	// log.Printf("Config: %+v", Config)
+
+	err := gotenv.Load(".env")
+	if err != nil {
+		fmt.Printf("failed to load env file: %v", err)
+	}
+
 	db_url, _ := os.LookupEnv("DB_URL")
 	mode, _ := os.LookupEnv("MODE")
 	http_port, _ := os.LookupEnv("HTTP_PORT")

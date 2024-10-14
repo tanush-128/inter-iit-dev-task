@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      hash: ${{ steps.git_hash.outputs.hash }}
 
     steps:
       - uses: actions/checkout@v3
@@ -35,3 +37,20 @@ jobs:
           git add .
           git commit -m "Update client image tag"
           git push origin main
+
+  deploy:
+    needs: build # Run deploy only after the build job succeeds
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH into EC2 and Deploy
+        run: |
+          ssh -o StrictHostKeyChecking=no -i "${{ secrets.EC2_PRIVATE_KEY }}" ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+            export DOCKER_HUB_USERNAME="${{ secrets.DOCKER_HUB_USERNAME }}"
+            export TAG="${{needs.build.outputs.hash }}"
+            cd client/
+            # Pull the new Docker image and restart the container
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/client:${{needs.build.outputs.hash }}
+            docker-compose down
+            docker-compose up -d
+          EOF

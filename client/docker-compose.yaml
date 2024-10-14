@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  client:
+    image: "${DOCKER_HUB_USERNAME}/client:${TAG}"
+    container_name: client-app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
