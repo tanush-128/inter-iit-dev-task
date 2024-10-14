@@ -28,24 +28,19 @@ jobs:
           echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/client:${{ steps.git_hash.outputs.hash }}
 
-      - name: Change the Conf file
-        run: |
-          git pull origin main
-          sed -i "s|${{ secrets.DOCKER_HUB_USERNAME }}/client.*|${{ secrets.DOCKER_HUB_USERNAME }}/client:${{ steps.git_hash.outputs.hash }}|g" client-app.yaml
-          git config --global user.email "tanush@myyahoo.com"
-          git config --global user.name "tanush-128"
-          git add .
-          git commit -m "Update client image tag"
-          git push origin main
-
   deploy:
     needs: build # Run deploy only after the build job succeeds
     runs-on: ubuntu-latest
 
     steps:
       - name: SSH into EC2 and Deploy
-        run: |
-          ssh -o StrictHostKeyChecking=no -i "${{ secrets.EC2_PRIVATE_KEY }}" ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_PRIVATE_KEY}}
+          port: 22
+          script: |
             export DOCKER_HUB_USERNAME="${{ secrets.DOCKER_HUB_USERNAME }}"
             export TAG="${{needs.build.outputs.hash }}"
             cd client/
@@ -53,4 +48,3 @@ jobs:
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/client:${{needs.build.outputs.hash }}
             docker-compose down
             docker-compose up -d
-          EOF
