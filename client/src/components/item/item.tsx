@@ -96,7 +96,7 @@ const ItemView = ({
         </div>
       </div>
 
-      <div className="flex-[7] space-y-4 rounded-3xl bg-secondary p-6 shadow-lg">
+      <div className="flex-[7] space-y-2 rounded-3xl bg-secondary p-6 shadow-lg">
         <div>
           <Label htmlFor="name" className="text-primary">
             Name

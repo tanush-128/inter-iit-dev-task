@@ -1,23 +1,16 @@
 "use client";
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
-import { set } from "zod";
+import { useState } from "react";
 import ItemView from "~/components/item/item";
 import { SidebarProvider } from "~/components/sidebar/provider";
 import { Sidebar } from "~/components/sidebar/sidebar";
 import UserData from "~/components/userdata";
 import Item from "~/models/item";
-import Location from "~/models/location";
+import { useData } from "~/providers/dataProvider";
 
 export default function HomePage() {
-  const [locations, setLocations] = useState<Location[]>([]);
-  const [items, setItems] = useState<Item[]>([]);
+  const { locations, items, setItems, setLocations } = useData();
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
-
-  useEffect(() => {
-    Location.getLocations().then((locations) => setLocations(locations));
-    Item.getItems().then((items) => setItems(items));
-  }, []);
 
   const deleteItem = (item: Item) => {
     Item.deleteItem(item).then(() => {
@@ -27,14 +20,10 @@ export default function HomePage() {
   };
 
   return (
-    <div className="flex h-screen gap-12 px-12 pb-2 pt-8">
+    <div className="flex h-screen gap-12 px-8 pb-2 pt-4">
       <div className="flex h-full w-[480px] flex-col">
-        <SidebarProvider allLocations={locations}>
-          <Sidebar
-            // locations={locations}
-            items={items}
-            setSelectedItem={setSelectedItem}
-          />
+        <SidebarProvider>
+          <Sidebar setSelectedItem={setSelectedItem} />
         </SidebarProvider>
         <UserData />
       </div>
@@ -42,17 +31,17 @@ export default function HomePage() {
         className="flex h-full w-full flex-col overflow-y-auto"
         id="scrollbar1"
       >
-        <div className="flex w-full justify-between pb-2">
+        <div className="flex w-full justify-between pb-2 pr-2">
           <div className="text-4xl font-extrabold">
             {selectedItem ? "Edit Item" : "Add Item"}
           </div>
           <div
-            className="flex items-center rounded-2xl border-[#22343e] p-1 hover:border-2"
+            className="flex h-10 items-center rounded-2xl bg-[#1b48ed] p-2 hover:border-2"
             onClick={() => {
               setSelectedItem(null);
             }}
           >
-            <Plus size={24} className="p-1" />
+            <Plus size={24} className="" />
             Add New Item
           </div>
         </div>

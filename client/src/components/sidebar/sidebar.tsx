@@ -1,5 +1,5 @@
 "use client";
-import { Folder, Image, Sidebar } from "lucide-react";
+import { Filter, Folder, Image, Sidebar, Type } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -11,24 +11,66 @@ import Location from "~/models/location";
 import { ContextMenuDemo } from "../menu";
 import { SidebarProvider, useSidebar } from "./provider";
 const LocationsSidebar = ({
-  items,
   setSelectedItem,
 }: {
-  items: Item[];
   setSelectedItem: (item: Item | null) => void;
 }) => {
-  const { locations } = useSidebar();
+  const {
+    locations,
+    showSearchResults,
+    resultItems,
+    items,
+    setShowFilterMenu,
+    showFilterMenu,
+  } = useSidebar();
   return (
-    <div
-      className="h-full overflow-y-auto rounded-3xl bg-secondary p-1 shadow-lg"
-      id="scrollbar1"
-    >
-      <LocationList
-        allLocations={locations}
-        locations={locations.filter((loc) => loc.parent_godown == null)}
-        items={items}
-        setSelectedItem={setSelectedItem}
-      />
+    <div className="relative h-full">
+      <div
+        className="relative h-full overflow-y-auto overflow-x-hidden rounded-3xl bg-secondary shadow-lg"
+        id="scrollbar1"
+      >
+        {/* Sticky Header with Search and Filter Button */}
+        <div className="sticky top-0 z-10 flex bg-secondary px-3 pb-1 pt-3">
+          <SearchBar />
+          <div className="relative">
+            <button
+              className="ml-2 rounded-lg bg-blue-600 bg-primary px-2 py-2 text-white"
+              onClick={() => {
+                setShowFilterMenu(!showFilterMenu);
+              }}
+            >
+              <Filter size={24} />
+            </button>
+          </div>
+        </div>
+
+        {/* Scrollable Content */}
+        {showSearchResults ? (
+          <div>
+            {resultItems.map((item) => (
+              <ItemListElement
+                item={item}
+                setSelectedItem={setSelectedItem}
+                key={item.item_id}
+              />
+            ))}
+          </div>
+        ) : (
+          <LocationList
+            allLocations={locations}
+            locations={locations.filter((loc) => loc.parent_godown == null)}
+            items={items}
+            setSelectedItem={setSelectedItem}
+          />
+        )}
+
+        {/* Filter Menu Rendered Outside Scrollable Box */}
+      </div>
+      {showFilterMenu && (
+        <div className="absolute -right-[60%] top-10 z-50">
+          <TypeFilterMenu />
+        </div>
+      )}
     </div>
   );
 };
@@ -87,6 +129,8 @@ const LocationList = ({
 };
 
 import { useRef, useEffect } from "react";
+import { SearchBar } from "../search/searchBar";
+import { TypeFilterMenu } from "./typeFilterMenu";
 
 const LocationElement = ({ location }: { location: Location }) => {
   const { foucusedLocation, setFocusedLocation, updateLocationName } =

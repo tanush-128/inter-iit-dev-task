@@ -1,6 +1,7 @@
-import { createContext, use, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import Item from "~/models/item";
 import Location from "~/models/location";
+import { useData } from "~/providers/dataProvider";
 
 interface SidebarContextType {
   focusedItem: Item | null;
@@ -9,23 +10,25 @@ interface SidebarContextType {
   setFocusedLocation: (location: Location | null) => void;
   updateLocationName: (location: Location, name: string) => Promise<void>;
   locations: Location[];
+  items: Item[];
+  setItems: (items: Item[]) => void;
   initiateNewLocation: (location: Location) => void;
+  showSearchResults: boolean;
+  setShowSearchResults: (show: boolean) => void;
+  resultItems: Item[];
+  setResultItems: (items: Item[]) => void;
+  showFilterMenu: boolean;
+  setShowFilterMenu: (show: boolean) => void;
 }
 
 const SidebarContext = createContext<SidebarContextType | null>(null);
 
-const SidebarProvider = ({
-  children,
-  allLocations,
-}: {
-  children: React.ReactNode;
-
-  allLocations: Location[];
-}) => {
+const SidebarProvider = ({ children }: { children: React.ReactNode }) => {
   const [focusedItem, setFocusedItem] = useState<Item | null>(null);
   const [foucusedLocation, setFocusedLocation] = useState<Location | null>(
     null,
   );
+
   const updateLocationName = async (location: Location, name: string) => {
     if (location.id === "new_location") {
       const loc = await Location.create({
@@ -50,11 +53,17 @@ const SidebarProvider = ({
       return newLocations;
     });
   };
-  const [locations, setLocations] = useState<Location[]>(allLocations);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [resultItems, setResultItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
+
+  const { locations, items: dataItems, setLocations } = useData();
+
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
 
   useEffect(() => {
-    setLocations(allLocations);
-  }, [allLocations]);
+    setItems(dataItems);
+  }, [dataItems]);
 
   const initiateNewLocation = (location: Location) => {
     const newLocation = new Location({
@@ -75,7 +84,16 @@ const SidebarProvider = ({
         setFocusedLocation,
         updateLocationName,
         locations,
+        items,
+        setItems,
         initiateNewLocation,
+        showSearchResults,
+        setShowSearchResults,
+        resultItems,
+        setResultItems,
+
+        showFilterMenu,
+        setShowFilterMenu,
       }}
     >
       {children}
