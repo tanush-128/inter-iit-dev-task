@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/tanush-128/openzo_backend/user/config"
 	handlers "github.com/tanush-128/openzo_backend/user/internal/api"
-	"github.com/tanush-128/openzo_backend/user/internal/middlewares"
 	"github.com/tanush-128/openzo_backend/user/internal/models"
 	"gorm.io/gorm"
 
@@ -40,9 +39,6 @@ func main() {
 
 	// Initialize HTTP server with Gin
 	router := gin.Default()
-	handler := handlers.NewHandler(&userService)
-	itemHandler := handlers.NewItemHandler(&itemService)
-	locationHandler := handlers.NewLocationHandler(&locationService)
 
 	addItemsData(db)
 	addLocationsData(db)
@@ -58,35 +54,9 @@ func main() {
 			c.JSON(http.StatusOK, gin.H{"data": "pong"})
 		})
 
-	itemGroup := router.Group("/item")
-	{
-		itemGroup.POST("/", itemHandler.CreateItem)
-		itemGroup.GET("/:id", itemHandler.GetItemByID)
-		itemGroup.GET("/", itemHandler.GetAllItems)
-		itemGroup.Use(middlewares.JwtMiddleware)
-		itemGroup.PUT("/", itemHandler.UpdateItem)
-		itemGroup.DELETE("/:id", itemHandler.DeleteItem)
-	}
-	// location route group
-	locationGroup := router.Group("/location")
-	{
-		locationGroup.POST("/", locationHandler.CreateLocation)
-		locationGroup.GET("/:id", locationHandler.GetLocationByID)
-		locationGroup.GET("/", locationHandler.GetAllLocations)
-		locationGroup.Use(middlewares.JwtMiddleware)
-		locationGroup.PUT("/", locationHandler.UpdateLocation)
-		locationGroup.DELETE("/:id", locationHandler.DeleteLocation)
-	}
-	// user route group
-	userGroup := router.Group("/user")
-	{
-		userGroup.POST("/", handler.CreateUser)
-		userGroup.POST("/signin", handler.UserSignIn)
-		userGroup.Use(middlewares.JwtMiddleware)
-		userGroup.PUT("/", handler.UpdateUser)
-		userGroup.GET("/jwt", handler.GetUserWithJWT)
-	}
-
+	handlers.NewItemHandler(&itemService, router)
+	handlers.NewLocationHandler(&locationService, router)
+	handlers.NewUserHandler(&userService, router)
 	// Start server
 	router.Run(fmt.Sprintf(":%s", cfg.HTTPPort))
 

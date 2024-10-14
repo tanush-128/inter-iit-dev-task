@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/tanush-128/openzo_backend/user/internal/middlewares"
 	"github.com/tanush-128/openzo_backend/user/internal/models"
 	"github.com/tanush-128/openzo_backend/user/internal/service"
 )
@@ -12,8 +13,18 @@ type LocationHandler struct {
 	locationService service.LocationService
 }
 
-func NewLocationHandler(locationService *service.LocationService) *LocationHandler {
-	return &LocationHandler{locationService: *locationService}
+func NewLocationHandler(locationService *service.LocationService, router *gin.Engine) *LocationHandler {
+	locationHandler := LocationHandler{locationService: *locationService}
+	locationGroup := router.Group("/location")
+	{
+		locationGroup.POST("/", locationHandler.CreateLocation)
+		locationGroup.GET("/:id", locationHandler.GetLocationByID)
+		locationGroup.GET("/", locationHandler.GetAllLocations)
+		locationGroup.Use(middlewares.JwtMiddleware)
+		locationGroup.PUT("/", locationHandler.UpdateLocation)
+		locationGroup.DELETE("/:id", locationHandler.DeleteLocation)
+	}
+	return &locationHandler
 }
 
 func (h *LocationHandler) CreateLocation(ctx *gin.Context) {

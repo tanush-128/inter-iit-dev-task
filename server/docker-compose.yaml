@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  client:
+    image: "${DOCKER_HUB_USERNAME}/server:${SERVER_TAG}"
+    container_name: server-app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - MODE=production
+      - HTTP_URL=8080
+      - DB_URL=host=ec2-13-234-76-199.ap-south-1.compute.amazonaws.com user=postgres password=8309300581@Om dbname=task port=5432 sslmode=disable TimeZone=Asia/Kolkata
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

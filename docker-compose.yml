@@ -5,10 +5,15 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_BACKEND_URL: http://localhost:8080 # Pass during build
     ports:
       - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8080 # Also pass at runtime
     depends_on:
       - server
+
   server:
     build:
       context: ./server
@@ -18,4 +23,4 @@ services:
     environment:
       - MODE=dev
       - HTTP_PORT=8080
-      - DB_URL=not_required
+      - DB_URL=not required

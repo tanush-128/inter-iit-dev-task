@@ -51,16 +51,13 @@
 - Docker Compose
 
 ### Setup:
-1. In `client/app/constants.ts`:
-    - Uncomment: `// const BACKEND_URL = "http://localhost:8080";`
-    - Comment out: `const BACKEND_URL = "https://backend.warhosuse.run.place";`
 
-2. Run the following command to start the services:
+1. Run the following command to start the services:
     ```bash
     docker-compose up --build
     ```
 
-3. Access the frontend at `http://localhost:3000`.
+2. Access the frontend at `http://localhost:3000`.
 
 
 

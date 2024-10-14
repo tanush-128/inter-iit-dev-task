@@ -24,7 +24,7 @@ jobs:
 
       - name: Build client image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/client:${{ steps.git_hash.outputs.hash }} ./client
+          docker build  -t ${{ secrets.DOCKER_HUB_USERNAME }}/client:${{ steps.git_hash.outputs.hash }} ./client 
           echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/client:${{ steps.git_hash.outputs.hash }}
 

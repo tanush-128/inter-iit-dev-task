@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/tanush-128/openzo_backend/user/internal/middlewares"
 	"github.com/tanush-128/openzo_backend/user/internal/models"
 	"github.com/tanush-128/openzo_backend/user/internal/service"
 )
@@ -12,8 +13,19 @@ type ItemHandler struct {
 	itemService service.ItemService
 }
 
-func NewItemHandler(itemService *service.ItemService) *ItemHandler {
-	return &ItemHandler{itemService: *itemService}
+func NewItemHandler(itemService *service.ItemService, router *gin.Engine) *ItemHandler {
+	itemHandler := ItemHandler{itemService: *itemService}
+	itemGroup := router.Group("/item")
+	{
+		itemGroup.POST("/", itemHandler.CreateItem)
+		itemGroup.GET("/:id", itemHandler.GetItemByID)
+		itemGroup.GET("/", itemHandler.GetAllItems)
+		itemGroup.Use(middlewares.JwtMiddleware)
+		itemGroup.PUT("/", itemHandler.UpdateItem)
+		itemGroup.DELETE("/:id", itemHandler.DeleteItem)
+	}
+
+	return &itemHandler
 }
 
 func (h *ItemHandler) CreateItem(ctx *gin.Context) {

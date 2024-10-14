@@ -4,19 +4,30 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/tanush-128/openzo_backend/user/internal/middlewares"
 	"github.com/tanush-128/openzo_backend/user/internal/models"
 	"github.com/tanush-128/openzo_backend/user/internal/service"
 )
 
-type Handler struct {
+type UserHandler struct {
 	userService service.UserService
 }
 
-func NewHandler(userService *service.UserService) *Handler {
-	return &Handler{userService: *userService}
+func NewUserHandler(userService *service.UserService, router *gin.Engine) *UserHandler {
+	handler := UserHandler{userService: *userService}
+
+	userGroup := router.Group("/user")
+	{
+		userGroup.POST("/", handler.CreateUser)
+		userGroup.POST("/signin", handler.UserSignIn)
+		userGroup.Use(middlewares.JwtMiddleware)
+		userGroup.PUT("/", handler.UpdateUser)
+		userGroup.GET("/jwt", handler.GetUserWithJWT)
+	}
+	return &handler
 }
 
-func (h *Handler) CreateUser(ctx *gin.Context) {
+func (h *UserHandler) CreateUser(ctx *gin.Context) {
 	var user models.User
 	if err := ctx.BindJSON(&user); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -35,7 +46,7 @@ func (h *Handler) CreateUser(ctx *gin.Context) {
 	})
 }
 
-func (h *Handler) GetUserByID(ctx *gin.Context) {
+func (h *UserHandler) GetUserByID(ctx *gin.Context) {
 	id := ctx.Param("id")
 
 	user, err := h.userService.GetUserByID(ctx, id)
@@ -47,7 +58,7 @@ func (h *Handler) GetUserByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 }
 
-func (h *Handler) GetUserByEmail(ctx *gin.Context) {
+func (h *UserHandler) GetUserByEmail(ctx *gin.Context) {
 	email := ctx.Param("email")
 
 	user, err := h.userService.GetUserByEmail(ctx, email)
@@ -59,7 +70,7 @@ func (h *Handler) GetUserByEmail(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 }
 
-func (h *Handler) UpdateUser(ctx *gin.Context) {
+func (h *UserHandler) UpdateUser(ctx *gin.Context) {
 	var user models.User
 	if err := ctx.BindJSON(&user); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -75,7 +86,7 @@ func (h *Handler) UpdateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, updatedUser)
 }
 
-func (h *Handler) UserSignIn(ctx *gin.Context) {
+func (h *UserHandler) UserSignIn(ctx *gin.Context) {
 	var user service.UserSignInRequest
 	if err := ctx.BindJSON(&user); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -91,7 +102,7 @@ func (h *Handler) UserSignIn(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"token": token})
 }
 
-func (h *Handler) GetUserWithJWT(ctx *gin.Context) {
+func (h *UserHandler) GetUserWithJWT(ctx *gin.Context) {
 	token := ctx.GetHeader("Authorization")
 
 	user, err := h.userService.GetUserWithJWT(ctx, token)
