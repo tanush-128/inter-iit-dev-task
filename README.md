@@ -1,6 +1,6 @@
 # Inter-IIT Dev Task
 
-[Watch the DEMO VIDEO](https://drive.google.com/file/d/1XdqyWGhaxSuylC9qzueIEJP2aNJTuRRo/view?t=3)
+[Watch the DEMO VIDEO](https://drive.google.com/file/d/1ixpiJdQy6uY9rxW8Io0yO6L7JcRtOd8x/view?usp=sharing)
 
 ## Tech Stack
 
