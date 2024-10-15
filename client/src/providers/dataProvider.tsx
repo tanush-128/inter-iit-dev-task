@@ -14,6 +14,8 @@ interface Data {
   items: Item[];
   setLocations: Dispatch<SetStateAction<Location[]>>;
   setItems: Dispatch<SetStateAction<Item[]>>;
+  selectedItem: Item | null;
+  setSelectedItem: Dispatch<SetStateAction<Item | null>>;
 }
 
 const DataContext = createContext<Data | null>(null);
@@ -21,6 +23,7 @@ const DataContext = createContext<Data | null>(null);
 const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [locations, setLocations] = useState<Location[]>([]);
   const [items, setItems] = useState<Item[]>([]);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
   useEffect(() => {
     Location.getLocations().then((locations) => setLocations(locations));
@@ -28,7 +31,17 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <DataContext.Provider value={{ locations, items, setLocations, setItems }}>
+    <DataContext.Provider
+      value={{
+        locations,
+        items,
+        setLocations,
+        setItems,
+
+        selectedItem,
+        setSelectedItem,
+      }}
+    >
       {children}
     </DataContext.Provider>
   );

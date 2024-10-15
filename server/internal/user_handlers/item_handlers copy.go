@@ -1,6 +1,7 @@
-package handlers
+package user_handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -58,7 +59,9 @@ func (h *ItemHandler) GetItemByID(ctx *gin.Context) {
 }
 
 func (h *ItemHandler) GetAllItems(ctx *gin.Context) {
-	items, err := h.itemService.GetAllItems(ctx)
+	queryParams := ctx.Request.URL.Query()
+	log.Printf("Query params: %v", queryParams)
+	items, err := h.itemService.GetAllItems(ctx, queryParams)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

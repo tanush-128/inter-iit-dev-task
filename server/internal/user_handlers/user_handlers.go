@@ -1,4 +1,4 @@
-package handlers
+package user_handlers
 
 import (
 	"net/http"
@@ -113,5 +113,3 @@ func (h *UserHandler) GetUserWithJWT(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, user)
 }
-
-// Add more handlers for other user operations (GetUser, UpdateUser, etc.)

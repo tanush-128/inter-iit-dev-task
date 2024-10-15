@@ -1,6 +1,8 @@
 package service
 
 import (
+	"net/url"
+
 	"github.com/gin-gonic/gin"
 	"github.com/tanush-128/openzo_backend/user/internal/models"
 	"github.com/tanush-128/openzo_backend/user/internal/repository"
@@ -11,7 +13,7 @@ type ItemService interface {
 	//CRUD
 	CreateItem(ctx *gin.Context, req models.Item) (models.Item, error)
 	GetItemByID(ctx *gin.Context, id string) (models.Item, error)
-	GetAllItems(ctx *gin.Context) ([]models.Item, error)
+	GetAllItems(ctx *gin.Context, queryParams url.Values) ([]models.Item, error)
 	UpdateItem(ctx *gin.Context, req models.Item) (models.Item, error)
 	DeleteItem(ctx *gin.Context, id string) error
 }
@@ -43,8 +45,8 @@ func (s *itemService) GetItemByID(ctx *gin.Context, id string) (models.Item, err
 	return item, nil
 }
 
-func (s *itemService) GetAllItems(ctx *gin.Context) ([]models.Item, error) {
-	items, err := s.itemRepository.GetAllItems()
+func (s *itemService) GetAllItems(ctx *gin.Context, queryParams url.Values) ([]models.Item, error) {
+	items, err := s.itemRepository.GetAllItems(queryParams )
 	if err != nil {
 		return []models.Item{}, err
 	}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSidebar } from "./provider";
+import { useSidebar } from "../provider";
 import { useData } from "~/providers/dataProvider";
 import { X } from "lucide-react";
 

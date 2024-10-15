@@ -1,17 +1,23 @@
 "use client";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { Menu, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ItemView from "~/components/item/item";
 import { SidebarProvider } from "~/components/sidebar/provider";
 import { Sidebar } from "~/components/sidebar/sidebar";
-import UserData from "~/components/userdata";
+import UserData from "~/components/sidebar/components/userdata";
 import Item from "~/models/item";
 import { useData } from "~/providers/dataProvider";
 
 export default function HomePage() {
-  const { locations, items, setItems, setLocations } = useData();
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const {
+    locations,
+    items,
+    setItems,
+    setLocations,
+    selectedItem,
+    setSelectedItem,
+  } = useData();
+  // const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
   const deleteItem = (item: Item) => {
     Item.deleteItem(item).then(() => {
@@ -65,7 +71,6 @@ export default function HomePage() {
             className="text-2xl md:hidden"
             ref={menuButtonRef}
             onClick={(e) => {
-              // e.stopPropagation();
               setOpenSidebar(true);
             }}
           >
@@ -89,7 +94,7 @@ export default function HomePage() {
           allItems={items}
           deleteItem={deleteItem}
           onChange={(i) => {
-            if (selectedItem) {
+            if (selectedItem && selectedItem.item_id !== "new_item") {
               Item.updateItem(i).then((updatedItem) => {
                 setItems((items) =>
                   items.map((item) =>
@@ -100,7 +105,10 @@ export default function HomePage() {
             } else {
               console.log(i);
               Item.createItem(i).then((createdItem) => {
-                setItems((items) => [...items, createdItem]);
+                setItems((items) => [
+                  ...items.filter((item) => item.item_id !== "new_item"),
+                  createdItem,
+                ]);
                 setSelectedItem(createdItem);
               });
             }

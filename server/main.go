@@ -9,8 +9,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/tanush-128/openzo_backend/user/config"
-	handlers "github.com/tanush-128/openzo_backend/user/internal/api"
 	"github.com/tanush-128/openzo_backend/user/internal/models"
+	handlers "github.com/tanush-128/openzo_backend/user/internal/user_handlers"
 	"gorm.io/gorm"
 
 	"github.com/tanush-128/openzo_backend/user/internal/repository"
@@ -37,7 +37,6 @@ func main() {
 	itemService := service.NewItemService(itemRepository)
 	locationService := service.NewLocationService(locationRepository)
 
-	// Initialize HTTP server with Gin
 	router := gin.Default()
 
 	addItemsData(db)
@@ -89,8 +88,7 @@ func addLocationsData(db *gorm.DB) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	db.Migrator().DropTable(&models.Location{})
-	db.Migrator().AutoMigrate(&models.Location{})
+
 	db.Create(&locations)
 
 	fmt.Println("Items added to database")
@@ -110,10 +108,6 @@ func addItemsData(db *gorm.DB) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	db.Migrator().DropTable(&models.Item{})
-	db.Migrator().DropTable(&models.ItemAttributes{})
-	db.Migrator().AutoMigrate(&models.ItemAttributes{})
-	db.Migrator().AutoMigrate(&models.Item{})
 
 	db.Create(&items)
 
