@@ -58,13 +58,13 @@ const ItemView = ({
   }, [item, isNewItem]);
 
   return (
-    <div className="flex h-full w-full gap-12">
-      <div className="flex h-[500px] flex-[5] flex-col rounded-3xl bg-secondary p-4">
+    <div className="h-full w-full items-start gap-12 space-y-4 xl:flex">
+      <div className="flex flex-[5] flex-col rounded-3xl bg-secondary p-4">
         <div className="flex items-center py-2 pb-4 text-xl font-bold">
           <Image size={24} />
           <span className="ml-1">Image</span>
         </div>
-        <div className="h-[420px] w-full rounded-3xl border border-dashed border-indigo-400 p-1">
+        <div className="h-[300px] w-full rounded-3xl border border-dashed border-indigo-400 p-1 md:h-[420px]">
           {updatedItem.image_url !== "" ? (
             <img
               src={

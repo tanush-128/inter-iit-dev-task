@@ -17,8 +17,12 @@ interface SidebarContextType {
   setShowSearchResults: (show: boolean) => void;
   resultItems: Item[];
   setResultItems: (items: Item[]) => void;
+  resultLocations: Location[];
+  setResultLocations: (locations: Location[]) => void;
   showFilterMenu: boolean;
   setShowFilterMenu: (show: boolean) => void;
+
+  moveItemToLocation: (item: Item, newLocation: Location) => void;
 }
 
 const SidebarContext = createContext<SidebarContextType | null>(null);
@@ -55,6 +59,7 @@ const SidebarProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [resultItems, setResultItems] = useState<Item[]>([]);
+  const [resultLocations, setResultLocations] = useState<Location[]>([]);
   const [items, setItems] = useState<Item[]>([]);
 
   const { locations, items: dataItems, setLocations } = useData();
@@ -74,6 +79,13 @@ const SidebarProvider = ({ children }: { children: React.ReactNode }) => {
     setLocations((prev) => [...prev, newLocation]);
     setFocusedLocation(newLocation);
   };
+  const moveItemToLocation = (item: Item, newLocation: Location) => {
+    setItems((prevItems) =>
+      prevItems.map((i) =>
+        i.item_id === item.item_id ? { ...i, godown_id: newLocation.id } : i,
+      ),
+    );
+  };
 
   return (
     <SidebarContext.Provider
@@ -86,6 +98,8 @@ const SidebarProvider = ({ children }: { children: React.ReactNode }) => {
         locations,
         items,
         setItems,
+        resultLocations,
+        setResultLocations,
         initiateNewLocation,
         showSearchResults,
         setShowSearchResults,
@@ -94,6 +108,7 @@ const SidebarProvider = ({ children }: { children: React.ReactNode }) => {
 
         showFilterMenu,
         setShowFilterMenu,
+        moveItemToLocation,
       }}
     >
       {children}

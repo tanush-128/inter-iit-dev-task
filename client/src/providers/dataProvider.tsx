@@ -25,7 +25,6 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     Location.getLocations().then((locations) => setLocations(locations));
     Item.getItems().then((items) => setItems(items));
-    
   }, []);
 
   return (
